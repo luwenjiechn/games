@@ -4,124 +4,128 @@ const imgFromPath = path => {
   return img;
 };
 
-// 挡板对象
-const Paddle = () => {
-  const img = imgFromPath("img/block.png");
-  let obj = {
-    x: 100,
-    y: 250,
-    speed: 5,
-    img
-  };
+class Paddle {
+  constructor() {
+    this.x = 100;
+    this.y = 250;
+    this.speed = 15;
+    this.img = imgFromPath("img/paddle.png");
+  }
+
   // 向左移动
-  obj.moveLeft = () => {
-    obj.x -= obj.speed;
-  };
+  moveLeft() {
+    this.x -= this.speed;
+  }
 
   // 向右移动
-  obj.moveRight = () => {
-    obj.x += obj.speed;
-  };
+  moveRight() {
+    this.x += this.speed;
+  }
 
   // 判断相撞
-  obj.collide = ball => {
-    if (ball.y + ball.img.height > obj.y) {
-      if (ball.x > obj.x && ball.x < obj.x + obj.img.width) {
+  collide(ball) {
+    if (ball.y + ball.img.height > this.y) {
+      if (ball.x > this.x && ball.x < this.x + this.img.width) {
         return true;
       }
     }
     return false;
-  };
-
-  return obj;
-};
+  }
+}
 
 // 球对象
-const Ball = () => {
-  const img = imgFromPath("img/ball.png");
-  let obj = {
-    x: 100,
-    y: 250,
-    speedX: 5,
-    speedY: 5,
-    img,
-    fired: false
-  };
+class Ball {
+  constructor() {
+    this.x = 100;
+    this.y = 150;
+    this.speedX = 5;
+    this.speedY = 5;
+    this.fired = false;
+    this.img = imgFromPath("img/ball.png");
+  }
 
-  obj.fire = () => {
-    obj.fired = true;
-  };
+  fire() {
+    this.fired = true;
+  }
 
   // 球移动
-  obj.move = () => {
-    if (obj.fired) {
+  move() {
+    // this.fire();
+    if (this.fired) {
       // 判断是否撞墙
-      if (obj.x <= 0 || obj.x >= 400) {
-        obj.speedX *= -1;
+      if (this.out("x")) {
+        this.speedX *= -1;
       }
-      if (obj.y <= 0 || obj.y >= 300) {
-        obj.speedY *= -1;
+      if (this.out("y")) {
+        this.speedY *= -1;
       }
-      obj.x += obj.speedX;
-      obj.y += obj.speedY;
+      this.x += this.speedX;
+      this.y += this.speedY;
+      // console.log(this.x, this.y);
     }
-  };
+  }
 
-  return obj;
-};
+  // 出界
+  out(position) {
+    if (position == "x") {
+      return this.x <= 0 || this.x >= 400;
+    }
+    if (position == "y") {
+      return this.y <= 0 || this.y >= 300;
+    }
+    return true;
+  }
+}
 
-const Game = () => {
-  const canvas = document.querySelector("#canvas");
-  const context = canvas.getContext("2d");
-  const obj = {
-    context,
-    canvas,
-    keydowns: {},
-    actions: {}
-  };
+class Game {
+  constructor() {
+    this.canvas = document.querySelector("#canvas");
+    this.context = canvas.getContext("2d");
+    this.keydowns = {};
+    this.actions = {};
+    this.clear = () =>
+      this.context.clearRect(0, 0, canvas.width, canvas.height);
 
-  obj.clear = () => obj.context.clearRect(0, 0, canvas.width, canvas.height);
+    this.drawImage = paddle => {
+      this.context.drawImage(paddle.img, paddle.x, paddle.y);
+    };
+    this.update = () => {};
 
-  obj.drawImage = paddle => {
-    obj.context.drawImage(paddle.img, paddle.x, paddle.y);
-  };
-  obj.update = () => {};
-
-  // events
-  window.addEventListener("keydown", events => {
-    // console.log(events)
-    obj.keydowns[events.code] = true;
-  });
-  window.addEventListener("keyup", events => {
-    obj.keydowns[events.code] = false;
-  });
-
-  // 注册事件
-  obj.registerAction = (key, callback) => (obj.actions[key] = callback);
-
-  setInterval(() => {
-    Object.keys(obj.actions).forEach(item => {
-      if (obj.keydowns[item]) {
-        obj.actions[item]();
-      }
+    // events
+    window.addEventListener("keydown", events => {
+      // console.log(events)
+      this.keydowns[events.code] = true;
     });
-    obj.update();
-    obj.clear();
-    obj.draw();
-  }, 1000 / 60);
+    window.addEventListener("keyup", events => {
+      this.keydowns[events.code] = false;
+    });
 
-  return obj;
-};
+    // 注册事件
+    this.registerAction = (key, callback) => (this.actions[key] = callback);
+
+    setInterval(() => {
+      Object.keys(this.actions).forEach(item => {
+        if (this.keydowns[item]) {
+          // console.log(this);
+          this.actions[item]();
+        }
+      });
+      this.update();
+      this.clear();
+      this.draw();
+    }, 1000 / 60);
+  }
+}
 
 const __main = () => {
-  const paddle = Paddle();
-  const ball = Ball();
-  const game = Game();
+  const paddle = new Paddle();
+  const ball = new Ball();
+  const game = new Game();
 
   // 注册事件
-  game.registerAction("ArrowLeft", paddle.moveLeft);
-  game.registerAction("ArrowRight", paddle.moveRight);
-  game.registerAction("KeyF", ball.fire);
+  game.registerAction("ArrowLeft", () => paddle.moveLeft());
+  game.registerAction("ArrowRight", () => paddle.moveRight());
+  game.registerAction("KeyF", () => ball.fire());
 
   // 游戏更新
   game.update = () => {
