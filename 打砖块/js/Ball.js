@@ -7,6 +7,8 @@ class Ball {
     this.speedY = 5;
     this.fired = false;
     this.img = imgFromPath("img/ball.png");
+    this.width = this.img.width;
+    this.height = this.img.height;
   }
 
   fire() {
