@@ -15,14 +15,17 @@ const __main = () => {
     if (interset(ball, paddle)) {
       ball.rebound("y");
     }
-    if (interset(ball, block)) {
+    if (interset(ball, block) && block.alive) {
       ball.rebound("y");
+      block.kill();
     }
   };
   game.draw = () => {
     game.drawImage(paddle);
     game.drawImage(ball);
-    game.drawImage(block);
+    if (block.alive) {
+      game.drawImage(block);
+    }
   };
 
   game.start();

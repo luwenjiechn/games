@@ -8,11 +8,11 @@ class Paddle {
 
   // 向左移动
   moveLeft() {
-    this.x -= this.speed;
+    if (this.x > 0) this.x -= this.speed;
   }
 
   // 向右移动
   moveRight() {
-    this.x += this.speed;
+    if (this.x < 400 - this.img.width) this.x += this.speed;
   }
 }
