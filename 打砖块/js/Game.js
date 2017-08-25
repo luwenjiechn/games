@@ -1,13 +1,13 @@
 // 主进程
 class Game {
   constructor() {
-    this.canvas = document.querySelector("#canvas");
-    this.context = canvas.getContext("2d");
+    this.canvas = document.querySelector("#stage");
+    this.context = this.canvas.getContext("2d");
     this.keydowns = {};
     this.actions = {};
     this.fps = 60;
     this.clear = () =>
-      this.context.clearRect(0, 0, canvas.width, canvas.height);
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.drawImage = paddle =>
       this.context.drawImage(paddle.img, paddle.x, paddle.y);
@@ -20,7 +20,7 @@ class Game {
   start() {
     // events
     window.addEventListener("keydown", events => {
-      // console.log(events)
+      console.log(events);
       this.keydowns[events.code] = true;
     });
     window.addEventListener("keyup", events => {
