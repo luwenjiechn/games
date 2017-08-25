@@ -15,6 +15,9 @@ const __main = () => {
     if (interset(ball, paddle)) {
       ball.speedY *= -1;
     }
+    if (interset(ball, block)) {
+      ball.speedY *= -1;
+    }
   };
   game.draw = () => {
     game.drawImage(paddle);

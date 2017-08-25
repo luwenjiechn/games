@@ -7,8 +7,6 @@ class Ball {
     this.speedY = 5;
     this.fired = false;
     this.img = imgFromPath("img/ball.png");
-    this.width = this.img.width;
-    this.height = this.img.height;
   }
 
   fire() {
@@ -21,10 +19,10 @@ class Ball {
     if (this.fired) {
       // 判断是否撞墙
       if (this.out("x")) {
-        this.speedX *= -1;
+        this.rebound("x");
       }
       if (this.out("y")) {
-        this.speedY *= -1;
+        this.rebound("y");
       }
       this.x += this.speedX;
       this.y += this.speedY;
@@ -32,13 +30,23 @@ class Ball {
     }
   }
 
+  // 球反弹
+  rebound(position) {
+    if (position == "x") {
+      this.speedX *= -1;
+    }
+    if (position == "y") {
+      this.speedY *= -1;
+    }
+  }
+
   // 出界
   out(position) {
     if (position == "x") {
-      return this.x <= 0 || this.x >= 400;
+      return this.x <= 0 || this.x + this.img.width >= 400;
     }
     if (position == "y") {
-      return this.y <= 0 || this.y >= 300;
+      return this.y <= 0 || this.y + this.img.height >= 300;
     }
     return true;
   }
