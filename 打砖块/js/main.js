@@ -1,7 +1,13 @@
 const __main = () => {
   const paddle = new Paddle();
   const ball = new Ball();
-  const block = new Block();
+  const blocks = [];
+  for (let i = 0; i <= 3; i++) {
+    const block = new Block();
+    block.x = i * 150;
+    block.y = 50;
+    blocks.push(block);
+  }
   const game = new Game();
 
   // 注册事件
@@ -15,17 +21,21 @@ const __main = () => {
     if (interset(ball, paddle)) {
       ball.rebound("y");
     }
-    if (interset(ball, block) && block.alive) {
-      ball.rebound("y");
-      block.kill();
-    }
+    blocks.forEach(block => {
+      if (interset(ball, block) && block.alive) {
+        ball.rebound("y");
+        block.kill();
+      }
+    });
   };
   game.draw = () => {
     game.drawImage(paddle);
     game.drawImage(ball);
-    if (block.alive) {
-      game.drawImage(block);
-    }
+    blocks.forEach((block, index) => {
+      if (block.alive) {
+        game.drawImage(block);
+      }
+    });
   };
 
   game.start();
