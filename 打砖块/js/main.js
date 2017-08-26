@@ -8,12 +8,14 @@ const __main = () => {
     block.y = 50;
     blocks.push(block);
   }
-  const game = new Game();
+  const game = new Stage();
 
   // 注册事件
   game.registerAction("ArrowLeft", () => paddle.moveLeft());
   game.registerAction("ArrowRight", () => paddle.moveRight());
-  game.registerAction("Space", () => ball.fire());
+  game.registerAction("Space", () => {
+    ball.fire()
+  });
 
   // 游戏更新
   game.update = () => {

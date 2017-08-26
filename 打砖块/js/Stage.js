@@ -1,5 +1,5 @@
 // 主进程
-class Game {
+class Stage {
   constructor() {
     this.canvas = document.querySelector("#stage");
     this.context = this.canvas.getContext("2d");
